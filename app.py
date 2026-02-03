@@ -7,7 +7,11 @@ from utils import save_base64_audio
 from feature_extractor import extract_features
 from model import predict
 
-app = FastAPI(title="AI Voice Detection API")
+app = FastAPI(
+    title="AI Voice Detection API",
+    root_path="/"
+)
+
 @app.get("/")
 def home():
     return {
@@ -49,5 +53,6 @@ def detect_voice(data: RequestBody):
         "explanation": explanation,
         "processing_time_ms": int((time.time() - start) * 1000)
     }
+
 
 
