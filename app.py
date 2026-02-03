@@ -10,8 +10,11 @@ from model import predict
 app = FastAPI(title="AI Voice Detection API")
 @app.get("/")
 def home():
-    return {"message": "Voice AI Detector API is running"}
-
+    return {
+        "message": "AI Voice Detection API is running",
+        "endpoint": "/detect-voice",
+        "docs": "/docs"
+    }
 
 class RequestBody(BaseModel):
     audio_base64: str
@@ -46,4 +49,5 @@ def detect_voice(data: RequestBody):
         "explanation": explanation,
         "processing_time_ms": int((time.time() - start) * 1000)
     }
+
 
