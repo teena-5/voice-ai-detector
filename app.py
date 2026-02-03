@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import time
 
@@ -8,11 +9,24 @@ from feature_extractor import extract_features
 from model import predict
 
 app = FastAPI(title="AI Voice Detection API")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 # --- ROOT ENDPOINT (for testing) ---
 @app.get("/")
 def home():
     return {"message": "Voice AI Detector API is running"}
+
+@app.get("/test")
+def test():
+    return {"status": "POST endpoint is ready"}
+
 
 # --- HEALTH CHECK (Render needs this) ---
 @app.get("/health")
@@ -54,3 +68,4 @@ def detect_voice(data: RequestBody):
         "explanation": explanation,
         "processing_time_ms": int((time.time() - start) * 1000)
     }
+
