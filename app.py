@@ -50,9 +50,8 @@ def detect_voice(data: RequestBody):
         "explanation": explanation,
         "processing_time_ms": int((time.time() - start) * 1000)
     }
-    if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=10000)
+    
+
 
 
 
