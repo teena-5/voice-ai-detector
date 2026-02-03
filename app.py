@@ -14,11 +14,8 @@ app = FastAPI(
 
 @app.get("/")
 def home():
-    return {
-        "message": "AI Voice Detection API is running",
-        "endpoint": "/detect-voice",
-        "docs": "/docs"
-    }
+    return {"message": "AI Voice Detection API is running"}
+
 
 class RequestBody(BaseModel):
     audio_base64: str
@@ -53,6 +50,11 @@ def detect_voice(data: RequestBody):
         "explanation": explanation,
         "processing_time_ms": int((time.time() - start) * 1000)
     }
+    if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=10000)
+
+
 
 
 
