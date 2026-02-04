@@ -1,9 +1,5 @@
 fastapi
 uvicorn
-librosa
+pydantic
 numpy
-scipy
-pydub
-scikit-learn
-joblib
-python-multipart
+
