@@ -1,6 +1,4 @@
 import os
-API_KEY = os.getenv("API_KEY","local_test_key")
 
-
-
-
+# Use this same key everywhere
+API_KEY = os.getenv("API_KEY", "local_test_key")
