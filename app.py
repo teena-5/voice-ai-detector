@@ -7,50 +7,46 @@ from utils import save_base64_audio
 from feature_extractor import extract_features
 from model import predict
 
-# ---------- APP INIT ----------
 app = FastAPI(title="AI Voice Detection API")
-
-# ---------- HEALTH CHECKS ----------
 
 @app.get("/")
 def home():
-    return {"message": "Voice AI Detector API is running"}
+    return {"message": "AI Voice Detection API is running"}
 
 @app.get("/health")
 def health_check():
     return {"status": "ok"}
 
-# ---------- REQUEST SCHEMA ----------
-
+# MATCH GUVI-HCL FORMAT
 class RequestBody(BaseModel):
-    audio_base64: str
     language: str
-    api_key: str
-
-# ---------- MAIN ENDPOINT ----------
-
-
+    audioFormat: str
+    audioBase64: str
 
 @app.post("/detect-voice")
-def detect_voice(
-    data: RequestBody,
-    x_api_key: str = Header(None)
-):
+def detect_voice(data: RequestBody, x_api_key: str = Header(None)):
+
+    # ---- AUTH CHECK (HEADER BASED) ----
     if x_api_key != API_KEY:
         raise HTTPException(status_code=401, detail="Invalid API Key")
 
     start = time.time()
 
-    # ---- PROCESS AUDIO ----
-    wav_path = save_base64_audio(data.audio_base64)
+    # Convert GUVI field to your internal format
+    wav_path = save_base64_audio(data.audioBase64)
     features = extract_features(wav_path)
     label, confidence = predict(features)
 
-    # ---- RESPONSE ----
+    explanation = {
+        "pitch_variation": "Low" if label == "AI_GENERATED" else "Natural",
+        "spectral_signature": "Over-smooth" if label == "AI_GENERATED" else "Organic",
+        "voice_micro_fluctuations": "Missing" if label == "AI_GENERATED" else "Present",
+        "model_reason": "AI voices show unnatural stability in pitch and rhythm"
+    }
+
     return {
         "classification": label,
         "confidence": round(confidence, 4),
         "language": data.language,
         "processing_time_ms": int((time.time() - start) * 1000)
     }
-
