@@ -1,21 +1,20 @@
 import base64
 import uuid
-import os
-import tempfile
-import soundfile as sf
-import numpy as np
+import wave
 
-def save_base64_audio(base64_string):
-    # Decode Base64 to bytes
-    audio_bytes = base64.b64decode(base64_string)
+def save_base64_audio(audio_base64: str) -> str:
+    """
+    Converts base64 string to WAV file and returns file path.
+    """
 
-    # Create safe temp directory (works on Windows/Mac/Linux)
-    temp_dir = tempfile.gettempdir()
+    try:
+        audio_bytes = base64.b64decode(audio_base64)
+    except Exception as e:
+        raise ValueError("Invalid Base64 audio data") from e
 
-    wav_path = os.path.join(temp_dir, f"{uuid.uuid4()}.wav")
+    file_path = f"/tmp/{uuid.uuid4()}.wav"
 
-    # Save bytes directly as WAV (assumes input is WAV-compatible)
-    with open(wav_path, "wb") as f:
+    with open(file_path, "wb") as f:
         f.write(audio_bytes)
 
-    return wav_path
+    return file_path
