@@ -17,7 +17,7 @@ def home():
 def health_check():
     return {"status": "ok"}
 
-# MATCH GUVI-HCL FORMAT
+# This MATCHES GUVI-HCL tester exactly
 class RequestBody(BaseModel):
     language: str
     audioFormat: str
@@ -36,13 +36,6 @@ def detect_voice(data: RequestBody, x_api_key: str = Header(None)):
     wav_path = save_base64_audio(data.audioBase64)
     features = extract_features(wav_path)
     label, confidence = predict(features)
-
-    explanation = {
-        "pitch_variation": "Low" if label == "AI_GENERATED" else "Natural",
-        "spectral_signature": "Over-smooth" if label == "AI_GENERATED" else "Organic",
-        "voice_micro_fluctuations": "Missing" if label == "AI_GENERATED" else "Present",
-        "model_reason": "AI voices show unnatural stability in pitch and rhythm"
-    }
 
     return {
         "classification": label,
