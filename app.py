@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Header
 from pydantic import BaseModel
 import time
 
@@ -29,11 +29,14 @@ class RequestBody(BaseModel):
 
 # ---------- MAIN ENDPOINT ----------
 
-@app.post("/detect-voice")
-def detect_voice(data: RequestBody):
 
-    # ---- AUTH CHECK (BODY-BASED) ----
-    if data.api_key != API_KEY:
+
+@app.post("/detect-voice")
+def detect_voice(
+    data: RequestBody,
+    x_api_key: str = Header(None)
+):
+    if x_api_key != API_KEY:
         raise HTTPException(status_code=401, detail="Invalid API Key")
 
     start = time.time()
@@ -50,3 +53,4 @@ def detect_voice(data: RequestBody):
         "language": data.language,
         "processing_time_ms": int((time.time() - start) * 1000)
     }
+
